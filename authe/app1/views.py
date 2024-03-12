@@ -246,11 +246,12 @@ def update(request):
     return render(request,'UpdateDetails1.html',{'all_blood':all_blood})
 
 def delete_bld(request,id):
-    bl=blood_details.objects.get(pk=id)
+    bl=blood_details.objects.get(id=id)
     bl.delete()
     return redirect('update')
 
 def update_bld(request,id):
+    blood=blood_details.objects.get(id=id)
     if request.method == 'POST':
         blood_type = request.POST.get('blood_type')
         amount = request.POST.get('amount')
@@ -258,13 +259,15 @@ def update_bld(request,id):
 
         # Save the blood details with the current user's hospital
         blood=blood_details(
+            id=id,
             hospital=request.user,
             blood_type=blood_type,
             amount=amount,
             days=days
         )
         blood.save()
-    return redirect('update')
+        return redirect('update')
+    return render(request, 'UpdatePage.html',{'blood':blood})
 
 def AddBlood(request):
     all_blood=blood_details.objects.filter(hospital=request.user)
@@ -282,3 +285,4 @@ def AddBlood(request):
         )
         blood.save()
         return redirect('update')
+    return render(request, 'AddPage.html')

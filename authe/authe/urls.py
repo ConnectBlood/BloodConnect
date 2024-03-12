@@ -33,8 +33,8 @@ urlpatterns = [
     path('distance/', views.distance, name='distance'),
     path('requestform/', views.request_form, name='request_form'),
     # path('hospitallist/',views.hospital_list,name='hospital_list'),
-    path('delete-bld/<str:id>', views.delete_bld, name='delete-bld'),
+    path('delete-bld/<id>', views.delete_bld, name='delete-bld'),
     path('update/',views.update, name='update'),
     path('AddBlood/',views.AddBlood, name='AddBlood'),
-    path('update-bld/<str:id>', views.update_bld,name='update_bld'),
+    path('update-bld/<id>', views.update_bld,name='update_bld'),
 ]
