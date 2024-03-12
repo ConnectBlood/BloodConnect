@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<!-- Created By CodingNepal -->
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Request form</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+    <!-- <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    /> -->
+  </head>
+  <style>
+    .hospital-list-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      padding: 10px 15px;
+      border-bottom: 2px solid darkgrey;
+      /* border-radius: 15px; */
+      /* gap: 40px; */
+    }
+    /* .hospital-list-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  padding-left: 15px;
+
+  border-bottom: 2px solid darkgrey;
+  gap: 40px;
+} */
+    .plc-holder {
+      color: transparent;
+    }
+    .table-bordered {
+      border: 1px solid #ddd !important;
+    }
+
+    @media screen and (max-width: 767px) {
+      table caption {
+        display: none;
+      }
+    }
+    .btn-open-popup {
+      padding: 12px 24px;
+      font-size: 18px;
+      background-color: green;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-open-popup:hover {
+      background-color: #4caf50;
+    }
+
+    .overlay-container {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .popup-box {
+      background: #fff;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+      width: 320px;
+      text-align: center;
+      opacity: 0;
+      transform: scale(0.8);
+      animation: fadeInUp 0.5s ease-out forwards;
+    }
+
+    .form-container {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-label {
+      margin-bottom: 10px;
+      font-size: 16px;
+      color: #444;
+      text-align: left;
+    }
+
+    .form-input {
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .btn-submit,
+    .btn-close-popup {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .btn-submit {
+      background-color: green;
+      color: #fff;
+    }
+
+    .btn-close-popup {
+      margin-top: 12px;
+      background-color: #e74c3c;
+      color: #fff;
+    }
+
+    .btn-submit:hover,
+    .btn-close-popup:hover {
+      background-color: #4caf50;
+    }
+
+    /* Keyframes for fadeInUp animation */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Animation for popup */
+    .overlay-container.show {
+      display: flex;
+      opacity: 1;
+    }
+  </style>
+  <body>
+    <h1>Update Your Blood Details</h1>
+    <div class="container">
+      <div class="form-outer">
+        <button class="btn" onclick="togglePopup()">Add New Blood Type</button>
+
+        <table class="table table-bordered table-hover">
+          <thead>
+            <tr>
+              <th>Sr No.</th>
+              <th>Blood Type</th>
+              <th>Amount</th>
+              <th>Button appears here</th>
+              <th>Button appears here</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for b in all_blood %}
+            <tr>
+              <td>{{b.blood_type}}</td>
+              <td>{{b.amount}}</td>
+              <td>{{b.days}}</td>
+
+              <td>
+                <button
+                  href="#popupOverlay1-{{forloop.counter}}"
+                  onclick="togglePopup1()"
+                  class="btn btn-req"
+                >
+                  EDIT
+                </button>
+              </td>
+              <td>
+                <button
+                  href="#popupOverlay2-{{forloop.counter}}"
+                  onclick="togglePopup2()"
+                  class="btn btn-req"
+                >
+                  DELETE
+                </button>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <!-- <div class="hospital-list-div">
+          <ul>
+            <li class="hospital-list-item">
+              <span>Blood Type</span>
+              <span>Amount</span>
+              <span>Days Valid</span>
+              <span class="plc-holder">Request button appears </span>
+              <span class="plc-holder">Request button appears </span>
+            </li>
+            <li class="hospital-list-item">
+              <span>A+</span>
+              <span>10</span>
+              <span>5 days</span>
+
+              <button class="btn btn-req">EDIT</button>
+              <button class="btn btn-req">DELETE</button>
+            </li>
+            <li class="hospital-list-item">
+              <span>A+</span>
+              <span>10</span>
+              <span>5 days</span>
+
+              <button class="btn btn-req">REQUEST</button>
+              <button class="btn btn-req">REQUEST</button>
+            </li>
+            <li class="hospital-list-item">
+              <span>A+</span>
+              <span>10</span>
+              <span>5 days</span>
+
+              <button class="btn btn-req">REQUEST</button>
+              <button class="btn btn-req">REQUEST</button>
+            </li>
+          </ul>
+        </div> -->
+
+        <!-- <ol>
+      {% for b in all_blood %}
+      <li>
+        {{b.blood_type}}
+        <p>Amount: {{b.amount}}</p>
+        <p>Days valid: {{b.days}}</p>
+        <button class="btn">EDIT</button>
+      </li>
+      {% endfor %}
+    </ol> -->
+
+        <!--  <div class="input">
+          <label for="pwd" class="label">Password: </label>
+          <input type="password" class="pwd" name="" />
+        </div>
+        <div class="input">
+          <label for="cpwd" class="label">Confirm Password: </label>
+          <input type="password" class="cpwd" name="" />
+        </div> -->
+        <!-- <div class="btn-div">
+          <button class="btn btn-next">REQUEST</button>
+        </div> -->
+        <div id="popupOverlay" class="overlay-container">
+          <div class="popup-box">
+            <h2 style="color: green">Popup Form</h2>
+            <form
+              action="{% url 'AddBlood'%}"
+              method="POST"
+              class="form-container"
+            >
+              {% csrf_token %}
+              <label class="form-label" for="blood_type">Blood Type </label>
+              <select name="blood_type" class="b-types">
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+              </select>
+
+              <label class="form-label" for="amount">Amount:</label>
+              <input
+                class="form-input"
+                type="number"
+                id="amount"
+                name="amount"
+                required
+              />
+              <label class="form-label" for="days_valid">Days Valid:</label>
+              <input
+                class="form-input"
+                type="number"
+                id="days_valid"
+                name="days_valid"
+                required
+              />
+
+              <button class="btn-submit" type="submit">Submit</button>
+            </form>
+
+            <button class="btn-close-popup" onclick="togglePopup()">
+              Close
+            </button>
+          </div>
+        </div>
+
+        {% for b in all_blood %}
+        <div
+          id="popupOverlay1-{{forloop.counter}}"
+          class="popupOverlay1 overlay-container"
+        >
+          <div class="popup-box">
+            <h2 style="color: green">Popup Form</h2>
+            <form
+              class="form-container"
+              action="/update/{{b.id}}"
+              method="post"
+            >
+              {% csrf_token %}
+              <label class="form-label" for="blood_type">Blood Type: </label>
+              <select name="blood_type" class="b-types">
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+              </select>
+
+              <label class="form-label" for="amount">Amount:</label>
+              <input
+                class="form-input"
+                type="number"
+                id="amount"
+                name="amount"
+                value="{{b.amount}}"
+                required
+              />
+              <label class="form-label" for="days_valid">Days Valid:</label>
+              <input
+                class="form-input"
+                type="number"
+                id="days_valid"
+                name="days_valid"
+                value="{{b.days}}"
+                required
+              />
+
+              <button class="btn-submit" type="submit"><a href="/update-bld/{{b.id}}">Submit</a></button>
+            </form>
+
+            <button class="btn-close-popup" onclick="togglePopup1()">
+              Close
+            </button>
+          </div>
+        </div>
+        {% endfor %} {% for b in all_blood %}
+        <div
+          id="popupOverlay2-{{forloop.counter}}"
+          class="popupOverlay2 overlay-container"
+        >
+          <div class="popup-box">
+            <h2 style="color: green">Delete</h2>
+            <form class="form-container">
+              <a href="/delete-bld/{{b.id}}" class="btn-submit" type="submit"
+                >Delete</a
+              >
+              {% csrf_token %}
+            </form>
+
+            <button class="btn-close-popup" onclick="togglePopup2()">
+              Close
+            </button>
+          </div>
+        </div>
+        {% endfor %}
+        <script>
+          function togglePopup() {
+            const overlay = document.getElementById("popupOverlay");
+            overlay.classList.toggle("show");
+          }
+          function togglePopup1() {
+            const overlay = document.querySelector(".popupOverlay1");
+            overlay.classList.toggle("show");
+          }
+          function togglePopup2() {
+            const overlay = document.querySelector(".popupOverlay2");
+            overlay.classList.toggle("show");
+          }
+        </script>
+      </div>
+    </div>
+  </body>
+</html>

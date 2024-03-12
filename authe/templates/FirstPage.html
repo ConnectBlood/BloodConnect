@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HomePage</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <div class="nav-bar">
+      <div class="btn-nav">
+        <button class="btn" >REQUEST BLOOD</button>
+        <button class="btn" ><a href="{% url 'Signup' %}">REGISTER</a></button>
+        <button class="btn" ><a href="{% url 'login' %}">LOGIN</a></button>
+      </div>
+    </div>
+    <div class="hp-content-div">
+      <img src="/static/HomePage_img.jpg" alt="" />
+      <div class="hp-content">
+        <h1>BloodConnect</h1>
+        <p class="hp-desc">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+          aliquip ex ea commodo consequat. Duis aute irure dolor in
+          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+          culpa qui officia deserunt mollit anim id est laborum.
+        </p>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <ul>
+        <li><a href="about-us.html">About Us</a></li>
+        <li><a href="contact-us.html">Contact Us</a></li>
+      </ul>
+    </footer>
+  </body>
+</html>

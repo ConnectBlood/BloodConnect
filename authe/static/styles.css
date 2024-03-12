@@ -1,0 +1,170 @@
+* {
+  margin: 0;
+  padding: 0;
+  outline: none;
+  box-sizing: border-box;
+  /* font-family: "Poppins", sans-serif; */
+}
+body {
+  min-height: 100vh;
+}
+h1 {
+  text-align: center;
+  margin-top: 50px;
+}
+.container {
+  margin: 75px 75px;
+  background-color: lightgrey;
+  padding: 50px;
+}
+.form-header {
+  margin-bottom: 50px;
+}
+.label {
+  display: inline-block;
+  width: 170px;
+}
+.input {
+  margin-top: 20px;
+  margin-left: 60px;
+  margin-right: 60px;
+  display: flex;
+  gap: 50px;
+}
+.btn-div {
+  text-align: center;
+  padding-top: 50px;
+  padding-left: 15px;
+  padding-right: 15px;
+  display: flex;
+  justify-content: space-between;
+}
+.btn {
+  padding: 10px;
+}
+.location-details {
+  margin-top: 20px;
+  padding-left: 30px;
+}
+.adt-header {
+  margin-top: 30px;
+}
+table {
+  width: 100%;
+  border: 2px solid;
+  border-collapse: collapse;
+}
+table,
+td,
+th {
+  border: 1px solid;
+  text-align: center;
+  padding: 15px;
+}
+.nav-bar {
+  height: 80px;
+  background-color: lightgrey;
+  width: 100%;
+  padding-right: 30px;
+}
+.btn-nav {
+  height: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-left: 20px;
+  gap: 30px;
+}
+.hp-content-div {
+  padding-left: 30px;
+  gap: 20px;
+  padding-right: 30px;
+  display: flex;
+  height: 75vh;
+  /* background-color: lightgrey; */
+  margin-top: 80px;
+}
+.hp-content {
+  padding-top: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-left: 50px;
+  padding-right: 50px;
+  gap: 50px;
+}
+.hp-desc {
+  font-size: 20px;
+  line-height: 1.5;
+}
+img {
+  border-radius: 5px;
+}
+.footer {
+  position: absolute;
+  margin-top: 60px;
+  width: 100%;
+  height: 70px;
+  background-color: lightgrey;
+}
+.vl {
+  border-left: 3px solid #000000;
+  height: 70vh;
+}
+.db-content-div {
+  padding-left: 30px;
+  gap: 20px;
+  padding-right: 30px;
+  display: flex;
+  justify-content: space-evenly;
+  width: 100vw;
+  height: 75vh;
+  /* background-color: lightgrey; */
+  margin-top: 80px;
+}
+.blood-dets {
+  width: 50vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+}
+.blood-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  background-color: lightgrey;
+  padding: 15px 15px;
+  border-radius: 15px;
+  gap: 40px;
+}
+.notifs {
+  width: 50vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+}
+.hospital-list-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding: 10px 15px;
+  border-bottom: 2px solid darkgrey;
+  /* border-radius: 15px; */
+  /* gap: 40px; */
+}
+/* .hospital-list-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  padding-left: 15px;
+
+  border-bottom: 2px solid darkgrey;
+  gap: 40px;
+} */
+.plc-holder {
+  color: transparent;
+}

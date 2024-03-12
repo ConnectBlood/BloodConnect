@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<!-- Created By CodingNepal -->
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Multi Step Form | CodingNepal</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+  </head>
+  <body>
+    <h1>Login</h1>
+
+    <form method="POST">
+      {% csrf_token %}
+      <div class="container">
+        <!-- <h2 class="form-header">Basic Info:</h2> -->
+        <div class="form-outer">
+          <div class="input">
+            <label for="email" class="label">Email: </label>
+            <input type="text" class="email" name="email" />
+          </div>
+          <div class="input">
+            <label for="pwd" class="label">Password: </label>
+            <input type="password" class="pwd" name="password" />
+          </div>
+          <!-- <div class="input">
+            <label for="cpwd" class="label">Confirm Password: </label>
+            <input type="password" class="cpwd" name="cpassword" />
+          </div> -->
+          <div class="btn-div">
+            <button type="submit" >Login</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </body>
+</html>

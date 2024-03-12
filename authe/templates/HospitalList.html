@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<!-- Created By CodingNepal -->
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Request form</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+  </head>
+  <body>
+    <h1>Nearby Hospitals With Required Blood Availibility</h1>
+    <div class="container">
+      <div class="form-outer">
+        <div class="hospital-list-div">
+          <ul>
+            <li class="hospital-list-item">
+              <span>Sr no.</span>
+              <span>Hospital Name</span>
+              <span>Amount Available</span>
+              <span>Distance</span>
+              <span class="plc-holder">Request button appears </span>
+            </li>
+            {% for hl in hospital_list %}
+            <li class="hospital-list-item">
+              <span>1</span>
+              <span>{{hl.donating_hospital}}</span>
+              <span>{{hl.amount}}</span>
+              <span>{{hl.distance}}</span>
+
+              <button class="btn btn-req">REQUEST</button>
+            </li>
+            {% endfor %}
+            
+          </ul>
+        </div>
+        <!--  <div class="input">
+          <label for="pwd" class="label">Password: </label>
+          <input type="password" class="pwd" name="" />
+        </div>
+        <div class="input">
+          <label for="cpwd" class="label">Confirm Password: </label>
+          <input type="password" class="cpwd" name="" />
+        </div> -->
+        <!-- <div class="btn-div">
+          <button class="btn btn-next">REQUEST</button>
+        </div> -->
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,37 @@
+<script type="text/javascript">
+    function sendFriendRequest(id,uiUpdateFunction) {
+        payload={
+            "csrfmiddlewaretoken":"{{csrf_token}}",
+            "receiver_user_id":id,
+        }
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url:"{% url sendrequest%}",
+            timeout: 5000,
+            data: payload,
+            success: function(data){
+                // console.log("SUCESS:"+data)
+                // if(data.result="success"){
+
+                // }
+                // else if(data.result="error"){
+
+                // }
+                if(data['response']=="request sent."){
+                    // update ui
+                }
+                else if(data['response']!= null){
+                    alert(data['response'])
+                }
+            },
+            error: function(data){
+                alert("something went wrong: "+data)
+            },
+            complete: function(data){
+                uiUpdateFunction()
+            }
+        })
+    }
+
+</script>

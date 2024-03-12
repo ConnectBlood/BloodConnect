@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/static/styles.css" />
+    <title>Dashboard</title>
+  </head>
+  <body>
+    <div class="nav-bar">
+      <div class="btn-nav">
+        <button class="btn"><a href="{% url 'request_form' %}">REQUEST BLOOD</a></button>
+        <button class="btn"><a href="{% url 'update' %}">UPDATE</a></button>
+        <button class="btn">LOGIN</button>
+      </div>
+    </div>
+    <div class="db-content-div">
+      <div class="notifs">
+        <h3>NOTIFICATIONS</h3>
+        
+        <ol>
+          {%for n1 in noti1 %}
+          <li>
+            <p>your stock for blood group {{n1.blood_type}} is not sufficient kindly restock it</p>
+          </li>
+          {%endfor %}
+          {%for n2 in noti2 %}
+          <li>
+            <p>your stock for blood group {{n1.blood_type}} is soon to be expired kindly restock it</p>
+          </li>
+          {%endfor %}
+        </ol>
+      </div>
+      <div class="vl"></div>
+      <div class="blood-dets">
+        <h3>AVAILABLBE BLOOD DETAILS</h3>
+        <table class="table">
+          <thead>
+            <tr>
+              <td>blood type</td>
+              <td>amount</td>
+              <td>days</td>
+            </tr>
+          </thead>
+          <tbody>
+            {% for b in all_blood %}
+            <tr>
+              <td>{{b.blood_type}}</td>
+              <td>{{b.amount}}</td>
+              <td>{{b.days}}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <!-- <div>
+        <h2><a href="{% url 'userlist' %}">Suggestions</a></h2>
+
+      </div> -->
+    </div>
+
+    <footer class="footer">
+      <ul>
+        <li><a href="about-us.html">About Us</a></li>
+        <li><a href="contact-us.html">Contact Us</a></li>
+      </ul>
+    </footer>
+  </body>
+</html>

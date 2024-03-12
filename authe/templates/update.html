@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2 class="form-header adt-header">Added Blood Details:</h2>
+          <div >
+            <table class="table">
+              <thead>
+                <tr>
+                  <td>Blood Type</td>
+                  <td>Amount Available</td>
+                  <td>Date of Donation</td>
+                  <td>valid till</td>
+                </tr>
+              </thead>
+              <tbody>
+                {% for b in blood_list %}
+                <tr>
+                  
+                  <td>{{b.blood_type}}</td>
+                  <td>{{b.amount}}</td>
+                  <td>{{b.donation_date}}</td>
+                  <td>{{b.valid_till}}</td>
+                  <td>
+                    <a href="delete-bld/{{b.hospital}}" class="btn btn-danger md-sm">Delete</a>
+                  </td>
+                </tr>
+                {% endfor %}
+             </tbody>
+            </table>
+          </div>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<!-- Created By CodingNepal -->
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Multi Step Form | CodingNepal</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+  </head>
+  <body>
+    <h1>Register As A Hospital</h1>
+
+    <form method="POST">
+      {% csrf_token %}
+      <div class="container">
+        <h2 class="form-header">Organization Name:</h2>
+        <div class="form-outer">
+          <div class="input">
+            <label for="username" class="label">Organization Name: </label>
+            <input type="text" class="username" name="org_name" />
+          </div>
+          <div class="location-details">
+            <h3 class="loc-dets-header">Location Details:</h3>
+            <div class="input">
+              <label for="pwd" class="label">State: </label>
+              <input type="text" class="pwd" name="org_state" />
+            </div>
+            <div class="input">
+              <label for="cpwd" class="label">District: </label>
+              <input type="text" class="cpwd" name="" />
+            </div>
+            <div class="input">
+              <label for="cpwd" class="label">City: </label>
+              <input type="text" class="cpwd" name="" />
+            </div>
+            <div class="input">
+              <label for="cpwd" class="label">Town: </label>
+              <input type="text" class="cpwd" name="" />
+            </div>
+            <div class="input">
+              <label for="cpwd" class="label">ZipCode: </label>
+              <input type="text" class="cpwd" name="" />
+            </div>
+            <div class="input">
+              <label for="cpwd" class="label">Location Coordinates: </label>
+              <button class="btn"><a href="{% url 'register' %}">Detect My Location</a></button>
+            </div>
+            <!-- <div class="input">
+              <label for="cpwd" class="label">Confirm Password: </label>
+              <input type="password" class="cpwd" name="" />
+            </div>
+            <div class="input">
+              <label for="cpwd" class="label">Confirm Password: </label>
+              <input type="password" class="cpwd" name="" />
+            </div>
+            <div class="input">
+              <label for="cpwd" class="label">Confirm Password: </label>
+              <input type="password" class="cpwd" name="" />
+            </div> -->
+          </div>
+          <div class="input">
+            <label for="sizes" class="label"
+              >Choose The Size Of Your Organization:</label
+            >
+  
+            <select name="sizes" class="sizes">
+              <option value="Large">Large</option>
+              <option value="Medium">Medium</option>
+              <option value="Small">Small</option>
+            </select>
+          </div>
+  
+          <div class="btn-div">
+            <button class="btn btn-prev">PREVIOUS</button>
+            <button class="btn">SAVE</button>
+            <button class="btn"><a href="{% url 'signup3' %}">NEXT</a></button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </body>
+</html>
