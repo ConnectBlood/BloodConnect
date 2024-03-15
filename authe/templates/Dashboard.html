@@ -31,6 +31,13 @@
           {%endfor %}
         </ol>
       </div>
+      <div>
+        {% for br in blood_requests %}
+        <p>hospital {{br.requesting_hospital}} has requested you a blood of blood group {{br.blood_type}} and amount {{br.requested_amount}}</p>
+        <button class="btn btn-req"><a href="/is-accepted/{{br.id}}">ACCEPT</a></button>
+        <button class="btn btn-req"><a href="/declined/{{br.id}}">DECLINE</a></button>
+        {% endfor %}
+      </div>
       <div class="vl"></div>
       <div class="blood-dets">
         <h3>AVAILABLBE BLOOD DETAILS</h3>

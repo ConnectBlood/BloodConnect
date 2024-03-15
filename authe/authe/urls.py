@@ -37,4 +37,7 @@ urlpatterns = [
     path('update/',views.update, name='update'),
     path('AddBlood/',views.AddBlood, name='AddBlood'),
     path('update-bld/<id>', views.update_bld,name='update_bld'),
+    path('send-request/<id>',views.send_request, name='send_request'),
+    path('is-accepted/<id>', views.is_accepted, name='is_accepted'),
+    path('declined/<id>', views.declined, name='declined'),
 ]

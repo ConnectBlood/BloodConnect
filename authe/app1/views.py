@@ -3,7 +3,7 @@ from django.shortcuts import render ,HttpResponse, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
-from . models import blood_details,hospital_details,FriendRequest, FriendList,notification,UserLocation,distance_list,eligible_hospitals
+from . models import blood_details,hospital_details,FriendRequest, FriendList,notification,UserLocation,distance_list,eligible_hospitals,request_list
 from django.views.generic.list import ListView
 import json
 from .utils import get_friend_request_or_false
@@ -43,13 +43,14 @@ def blood_view(request):
                 )
     noti1=notification.objects.filter(hospital=request.user, reason="shortage")
     noti2=notification.objects.filter(hospital=request.user, reason="expiry")
-
+    threshold=hospital_details.objects.get(hospital_id=request.user)
     renoti=blood_details.objects.filter(hospital=request.user)
     for d in renoti:
-        if d.amount>=10:
+        if d.amount>=threshold.threshold:
             noti_remove=notification.objects.filter(hospital=request.user, blood_type=d.blood_type)
             noti_remove.delete()
-    return render(request, 'Dashboard.html', {'all_blood': all_blood,'noti1':noti1,'noti2':noti2})
+    blood_requests=request_list.objects.filter(donating_hospital=request.user)
+    return render(request, 'Dashboard.html', {'all_blood': all_blood,'noti1':noti1,'noti2':noti2,'blood_requests':blood_requests})
 
 def SignupPage(request):
     if request.method == 'POST':
@@ -224,15 +225,27 @@ def request_form(request):
             detail1.delete()
         else:
             pass
-        for stock in blood_type_list:
-            if (stock.amount)>amount1 and (stock.amount-amount1)>threshold.threshold:
-                distance_exist=distance_list.objects.filter(user=request.user,donating_hospital=stock.hospital).exists()
-                if distance_exist :
-                    distance1=distance_list.objects.get(user=request.user,donating_hospital=stock.hospital)
-                    eligible_hospitals.objects.create(user=request.user,donating_hospital=stock.hospital,amount=stock.amount,distance=distance1.distance,blood_type=blood_type)
-                else:
-                    distance2=distance_list.objects.get(user=stock.hospital,donating_hospital=request.user)
-                    eligible_hospitals.objects.create(user=request.user,donating_hospital=stock.hospital,amount=stock.amount,distance=distance2.distance,blood_type=blood_type)
+        if 'Is_emergency' in request.POST:
+            for stock in blood_type_list:
+                if (stock.amount)>amount1 :
+                    distance_exist=distance_list.objects.filter(user=request.user,donating_hospital=stock.hospital).exists()
+                    if distance_exist :
+                        distance1=distance_list.objects.get(user=request.user,donating_hospital=stock.hospital)
+                        eligible_hospitals.objects.create(user=request.user,donating_hospital=stock.hospital,amount=stock.amount,distance=distance1.distance,blood_type=blood_type,requested_amount=amount1)
+                    else:
+                        distance2=distance_list.objects.get(user=stock.hospital,donating_hospital=request.user)
+                        eligible_hospitals.objects.create(user=request.user,donating_hospital=stock.hospital,amount=stock.amount,distance=distance2.distance,blood_type=blood_type,requested_amount=amount1)
+        else:
+            for stock in blood_type_list:
+                if (stock.amount)>amount1 and (stock.amount-amount1)>threshold.threshold:
+                    distance_exist=distance_list.objects.filter(user=request.user,donating_hospital=stock.hospital).exists()
+                    if distance_exist :
+                        distance1=distance_list.objects.get(user=request.user,donating_hospital=stock.hospital)
+                        eligible_hospitals.objects.create(user=request.user,donating_hospital=stock.hospital,amount=stock.amount,distance=distance1.distance,blood_type=blood_type,requested_amount=amount1)
+                    else:
+                        distance2=distance_list.objects.get(user=stock.hospital,donating_hospital=request.user)
+                        eligible_hospitals.objects.create(user=request.user,donating_hospital=stock.hospital,amount=stock.amount,distance=distance2.distance,blood_type=blood_type,requested_amount=amount1)
+         
         hospital_list=eligible_hospitals.objects.filter(user=request.user,blood_type=blood_type)    
         return render(request,'RequestForm.html',{'hospital_list':hospital_list})
     return render(request,'RequestForm.html')
@@ -286,3 +299,27 @@ def AddBlood(request):
         blood.save()
         return redirect('update')
     return render(request, 'AddPage.html')
+
+def send_request(request,id):
+    hs=eligible_hospitals.objects.get(id=id)
+    request_list.objects.create(
+        requesting_hospital=request.user,
+        donating_hospital=hs.donating_hospital,
+        blood_type=hs.blood_type,
+        amount=hs.requested_amount,
+        message="hii",
+        is_accepted=0,
+        is_confirmed=0
+    )
+    return redirect('request_form')
+
+def is_accepted(request,id):
+    ok=request_list.objects.get(id=id)
+    ok.is_accepted=1
+    ok.save()
+    return redirect('Dashboard')
+
+def declined(request,id):
+    notok=request_list.objects.get(id=id)
+    notok.delete()
+    return redirect('Dashboard')

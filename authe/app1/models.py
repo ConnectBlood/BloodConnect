@@ -162,3 +162,13 @@ class eligible_hospitals(models.Model):
     amount=models.IntegerField()
     distance=models.FloatField(max_length=469)
     blood_type=models.CharField(max_length=358, null=True, default=None)
+    requested_amount=models.IntegerField(null=True, default=None)
+
+class request_list(models.Model):
+    requesting_hospital=models.ForeignKey(User,on_delete=models.CASCADE,default=None)
+    donating_hospital=models.CharField(max_length=354)
+    blood_type=models.CharField(max_length=345)
+    amount=models.IntegerField()
+    message=models.CharField(max_length=546)
+    is_accepted=models.BooleanField()
+    is_confirmed=models.BooleanField()
