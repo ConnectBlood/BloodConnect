@@ -26,7 +26,7 @@
           {%endfor %}
           {%for n2 in noti2 %}
           <li>
-            <p>your stock for blood group {{n1.blood_type}} is soon to be expired kindly restock it</p>
+            <p>your stock for blood group {{n2.blood_type}} is soon to be expired kindly restock it</p>
           </li>
           {%endfor %}
         </ol>
@@ -46,7 +46,7 @@
             <tr>
               <td>blood type</td>
               <td>amount</td>
-              <td>days</td>
+              <td>valid till</td>
             </tr>
           </thead>
           <tbody>
@@ -54,7 +54,7 @@
             <tr>
               <td>{{b.blood_type}}</td>
               <td>{{b.amount}}</td>
-              <td>{{b.days}}</td>
+              <td>{{b.valid_till}}</td>
             </tr>
             {% endfor %}
           </tbody>

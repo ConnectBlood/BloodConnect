@@ -1,4 +1,5 @@
 from datetime import timedelta
+import datetime
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 # from django.contrib.auth.models import Group, Permission
@@ -35,12 +36,12 @@ class blood_details(models.Model):
     threshold=models.ForeignKey(hospital_details, on_delete=models.CASCADE, default=None, null=True)
     blood_type = models.CharField(max_length=128)
     amount=models.IntegerField()
-    # days=models.DateField(blank=True, default=None)
-    days=models.IntegerField(default=0)
-    
+    donation_date = models.DateField(null=True, blank=True)
+    valid_till = models.DateField(blank=True, null=True)  # New field for valid till date
+    remaining_days=models.IntegerField(null=True, blank=True)
+
     def __str__(self):
         return self.blood_type
-    
 # class bloodrequest(models.Model):
 #     sender=models.ForeignKey(User, on_delete=models.CASCADE, related_name='sender')
 #     receiver=models.ForeignKey(User,on_delete=models.CASCADE,related_name='receiver')
@@ -49,6 +50,8 @@ class notification(models.Model):
     hospital=models.ForeignKey(User, on_delete=models.CASCADE, default=None, null=True)
     blood_type=models.CharField(max_length=256)
     reason=models.CharField(max_length=256, null=True)
+    amount=models.IntegerField(null=True, blank=True)
+    remaining_days=models.IntegerField(null=True, blank=True)
     def __str__(self):
         return self.blood_type   
 
@@ -163,6 +166,8 @@ class eligible_hospitals(models.Model):
     distance=models.FloatField(max_length=469)
     blood_type=models.CharField(max_length=358, null=True, default=None)
     requested_amount=models.IntegerField(null=True, default=None)
+    available_blood_type=models.CharField(max_length=624,null=True, default=None)
+    total_wt=models.FloatField(null=True, default=None)
 
 class request_list(models.Model):
     requesting_hospital=models.ForeignKey(User,on_delete=models.CASCADE,default=None)
