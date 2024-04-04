@@ -59,7 +59,7 @@ def blood_view(request):
         if d1.remaining_days>5:
             noti_remove1=notification.objects.filter(hospital=request.user, blood_type=d1.blood_type,reason="expiry")
             noti_remove1.delete()
-    blood_requests=request_list.objects.filter(donating_hospital=request.user)
+    blood_requests=request_list.objects.filter(donating_hospital=request.user).order_by('-total_wt')
     return render(request, 'Dashboard.html', {'all_blood': all_blood,'noti1':noti1,'noti2':noti2,'blood_requests':blood_requests})
 
 def SignupPage(request):
@@ -367,6 +367,7 @@ def send_request(request,id):
         donating_hospital=hs.donating_hospital,
         blood_type=hs.blood_type,
         amount=hs.requested_amount,
+        total_wt=hs.total_wt,
         message="hii",
         is_accepted=0,
         is_confirmed=0

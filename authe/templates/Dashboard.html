@@ -11,7 +11,7 @@
       <div class="btn-nav">
         <button class="btn"><a href="{% url 'request_form' %}">REQUEST BLOOD</a></button>
         <button class="btn"><a href="{% url 'update' %}">UPDATE</a></button>
-        <button class="btn">LOGIN</button>
+        <button class="btn"><a href="{% url 'logout' %}">LOGOUT</a></button>
       </div>
     </div>
     <div class="db-content-div">
@@ -33,7 +33,7 @@
       </div>
       <div>
         {% for br in blood_requests %}
-        <p>hospital {{br.requesting_hospital}} has requested you a blood of blood group {{br.blood_type}} and amount {{br.requested_amount}}</p>
+        <p>hospital {{br.requesting_hospital}} has requested you a blood of blood group {{br.blood_type}} and amount {{br.amount}} with weight {{br.total_wt}}</p>
         <button class="btn btn-req"><a href="/is-accepted/{{br.id}}">ACCEPT</a></button>
         <button class="btn btn-req"><a href="/declined/{{br.id}}">DECLINE</a></button>
         {% endfor %}

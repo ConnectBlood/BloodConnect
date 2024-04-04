@@ -176,4 +176,5 @@ class request_list(models.Model):
     amount=models.IntegerField()
     message=models.CharField(max_length=546)
     is_accepted=models.BooleanField()
+    total_wt=models.FloatField(null=True, default=None)
     is_confirmed=models.BooleanField()
