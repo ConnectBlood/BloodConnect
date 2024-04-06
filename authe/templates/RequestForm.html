@@ -77,13 +77,10 @@
                 <td>{{hl.distance}}</td>
                 <td>{{hl.total_wt}}</td>
                 
-                {%if hl in list_of_requests%}
-                <td>confirm</td>
                 
-                {%else %}
                 
                 <td><button class="btn btn-req" id="request-button"><a href="/send-request/{{hl.id}}">REQUEST</a></button></td>
-                {%endif %}
+                
               </tr>
               {% endfor %}
             </tbody>

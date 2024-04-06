@@ -296,7 +296,7 @@ def request_form(request):
                             total_wt=wt+(2.0/distance2.distance)
                             eligible_hospitals.objects.create(user=request.user,donating_hospital=stock.hospital,available_blood_type=stock.blood_type,amount=stock.amount,distance=distance2.distance,blood_type=blood_type,requested_amount=amount1,total_wt=total_wt)
         
-        hospital_list=eligible_hospitals.objects.filter(user=request.user,blood_type=blood_type)
+        hospital_list=eligible_hospitals.objects.filter(user=request.user)
         list_of_requests=eligible_hospitals.objects.filter(user__in=request_list.objects.values('requesting_hospital'),
                                                            blood_type__in=request_list.objects.values('blood_type'))    
         return render(request,'RequestForm.html',{'hospital_list':hospital_list, 'list_of_requests':list_of_requests})
