@@ -9,7 +9,7 @@ import json
 from .utils import get_friend_request_or_false
 import requests
 from math import  radians, sin, cos, sqrt, atan2
-
+from django.http import JsonResponse
 # Create your views here.
 def FirstPage(request):
     return render(request, 'FirstPage.html')
@@ -373,7 +373,8 @@ def send_request(request,id):
         is_confirmed=0
     )
     
-    return redirect('request_form')
+    data = {'status': 'success', 'id': id}
+    return JsonResponse(data)
 
 def is_accepted(request,id):
     ok=request_list.objects.get(id=id)

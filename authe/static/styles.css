@@ -168,3 +168,6 @@ img {
 .plc-holder {
   color: transparent;
 }
+.hidden {
+  display: none;
+}

@@ -1,93 +1,165 @@
 <!DOCTYPE html>
 <!-- Created By CodingNepal -->
 <html lang="en" dir="ltr">
-<head>
-  <meta charset="utf-8" />
-  <title>Request form</title>
-  <link rel="stylesheet" href="/static/styles.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-</head>
-<body>
-  <h1>Request Blood From Nearby Hospital</h1>
-  <form method="POST">
-    {% csrf_token %}
-    <div class="container">
-      <h2>Request Information</h2>
-      <div class="form-outer">
-        <div class="input">
-          <label for="b-type" class="label">Choose Blood Type:</label>
-          <select name="blood_type" class="b-types">
-            <option value="A+">A+</option>
-            <option value="A-">A-</option>
-            <option value="B+">B+</option>
-            <option value="B-">B-</option>
-            <option value="AB+">AB+</option>
-            <option value="AB-">AB-</option>
-            <option value="O+">O+</option>
-            <option value="O-+">O-</option>
-          </select>
-        </div>
-        <div class="input">
-          <label for="request-amount" class="label">Amount: </label>
-          <input type="number" class="request-amount" name="amount" />
-        </div>
-        <div>
-          <p>Reason for blood demand :</p>
-        </div>
-        <div class="input">
-          <label for="restocking" class="label">Restocking </label>
-          <input type="radio" class="request-amount" id="restocking" name="restocking" value="1" />
-        </div>
-        <div class="input">
-          <label for="urgent_restocking" class="label">Urgent Restocking </label>
-          <input type="radio" class="request-amount" id="urgent_restocking" name="restocking" value="2" />
-        </div>
-        <div class="input">
-          <label for="blood_related_diseases" class="label">Blood related diseases </label>
-          <input type="radio" class="request-amount" id="blood_related_diseases" name="restocking"  value="3"/>
-        </div>
-        <div class="input">
-          <label for="emergency" class="label">It's an EMERGENCY! </label>
-          <input type="radio" class="request-amount" id="emergency" name="restocking" value="4"/>
-        </div>
-        <div class="btn-div">
-          <button class="btn btn-next" type="submit">REQUEST</button>
-        </div>
-        <div>
-          <table class="table">
-            <thead>
-              <tr>
-                <td>sr.no</td>
-                <td>hospital name</td>
-                <td>blood type</td>
-                <td>amount available</td>
-                <td>distance</td>
-                <td>total_wt</td>
-                <td>request button</td>
-              </tr>
-            </thead>
-            <tbody>
-              {% for hl in hospital_list %}
-              <tr>
-                <td>1</td>
-                <td>{{hl.donating_hospital}}</td>
-                <td>{{hl.available_blood_type}}</td>
-                <td>{{hl.amount}}</td>
-                <td>{{hl.distance}}</td>
-                <td>{{hl.total_wt}}</td>
-                
-                
-                
-                <td><button class="btn btn-req" id="request-button"><a href="/send-request/{{hl.id}}">REQUEST</a></button></td>
-                
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
+  <head>
+    <meta charset="utf-8" />
+    <title>Request form</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <h1>Request Blood From Nearby Hospital</h1>
+    <form method="POST">
+      {% csrf_token %}
+      <div class="container">
+        <h2>Request Information</h2>
+        <div class="form-outer">
+          <div class="input">
+            <label for="b-type" class="label">Choose Blood Type:</label>
+            <select name="blood_type" class="b-types">
+              <option value="A+">A+</option>
+              <option value="A-">A-</option>
+              <option value="B+">B+</option>
+              <option value="B-">B-</option>
+              <option value="AB+">AB+</option>
+              <option value="AB-">AB-</option>
+              <option value="O+">O+</option>
+              <option value="O-+">O-</option>
+            </select>
+          </div>
+          <div class="input">
+            <label for="request-amount" class="label">Amount: </label>
+            <input type="number" class="request-amount" name="amount" />
+          </div>
+          <div>
+            <p>Reason for blood demand :</p>
+          </div>
+          <div class="input">
+            <label for="restocking" class="label">Restocking </label>
+            <input
+              type="radio"
+              class="request-amount"
+              id="restocking"
+              name="restocking"
+              value="1"
+            />
+          </div>
+          <div class="input">
+            <label for="urgent_restocking" class="label"
+              >Urgent Restocking
+            </label>
+            <input
+              type="radio"
+              class="request-amount"
+              id="urgent_restocking"
+              name="restocking"
+              value="2"
+            />
+          </div>
+          <div class="input">
+            <label for="blood_related_diseases" class="label"
+              >Blood related diseases
+            </label>
+            <input
+              type="radio"
+              class="request-amount"
+              id="blood_related_diseases"
+              name="restocking"
+              value="3"
+            />
+          </div>
+          <div class="input">
+            <label for="emergency" class="label">It's an EMERGENCY! </label>
+            <input
+              type="radio"
+              class="request-amount"
+              id="emergency"
+              name="restocking"
+              value="4"
+            />
+          </div>
+          <div class="btn-div">
+            <button class="btn btn-next" type="submit">REQUEST</button>
+          </div>
+          </div>
+        </form>
+          <div>
+            <table class="table">
+              <thead>
+                <tr>
+                  <td>hospital name</td>
+                  <td>blood type</td>
+                  <td>amount available</td>
+                  <td>distance</td>
+                  <td>total_wt</td>
+                  <td>request button</td>
+                </tr>
+              </thead>
+              <tbody>
+                {% for hl in hospital_list %}
+                <tr>
+                  <td>{{hl.donating_hospital}}</td>
+                  <td>{{hl.available_blood_type}}</td>
+                  <td>{{hl.amount}}</td>
+                  <td>{{hl.distance}}</td>
+                  <td>{{hl.total_wt}}</td>
+
+                  <td>
+                    <button data-url=""="{% url 'send_request' hl.id %}" class="btn btn-req" id="request-button">
+                      REQUEST
+                    </button>
+                    <div id="actionButtons" style="display: none;">
+                      <button id="confirmButton">Confirm</button>
+                      <button id="rejectButton">Reject</button>
+                    </div>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
-    </div>
-  </form>
-</body>
+   
+      <script>
+        $(document).ready(function () {
+            $(".btn-req").click(function (e) {
+                e.preventDefault();
+                var $this = $(this);
+                var url = $this.data("url");
+                
+                $.ajax({
+                    url: url,
+                    type: "GET",
+                    success: function (response) {
+                        var $confirmRejectButtons = $("<div class='confirm-reject-buttons'>" +
+                                                      "<button class='btn btn-confirm'>Confirm</button>" +
+                                                      "<button class='btn btn-reject'>Reject</button>" +
+                                                      "</div>");
+                        $this.after($confirmRejectButtons);
+                        $this.hide();
+                    },
+                    error: function (xhr, errmsg, err) {
+                        alert("Error processing action!");
+                        console.log(xhr.status + ": " + xhr.responseText);
+                    },
+                });
+            });
+        
+            // Event delegation for confirm button
+            $(document).on("click", ".btn-confirm", function () {
+                // Handle confirm action
+            });
+        
+            // Event delegation for reject button
+            $(document).on("click", ".btn-reject", function () {
+                // Handle reject action
+            });
+        });
+        </script>
+  </body>
 </html>
