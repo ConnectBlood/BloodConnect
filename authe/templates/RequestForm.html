@@ -109,11 +109,15 @@
                   <td>{{hl.total_wt}}</td>
 
                   <td>
-                    <button data-url=""="{% url 'send_request' hl.id %}" class="btn btn-req" id="request-button">
+                    <button data-url="{% url 'send_request' hl.id %}" class="btn btn-req" id="request-button">
                       REQUEST
                     </button>
                     <div id="actionButtons" style="display: none;">
-                      <button id="confirmButton">Confirm</button>
+                      {%if hl.is_accepted %}
+                      <button  id="confirmButton" >Confirm</button>
+                      {%else %}
+                      <button disabled id="confirmButton" >Confirm</button>
+                      {%endif%}
                       <button id="rejectButton">Reject</button>
                     </div>
                   </td>

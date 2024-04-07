@@ -253,12 +253,12 @@ def request_form(request):
         elif selected_option=="4":
             wt=4
         
-        detail_exists=eligible_hospitals.objects.filter(user=request.user,blood_type=blood_type).exists()
-        if detail_exists:
-            detail1=eligible_hospitals.objects.filter(user=request.user,blood_type=blood_type)
-            detail1.delete()
-        else:
-            pass
+        # detail_exists=eligible_hospitals.objects.filter(user=request.user,blood_type=blood_type).exists()
+        # if detail_exists:
+        #     detail1=eligible_hospitals.objects.filter(user=request.user,blood_type=blood_type)
+        #     detail1.delete()
+        # else:
+        #     pass
         if 'emergency' in request.POST:
             for stock in blood_type_list:
                 if (stock.amount)>amount1 :
