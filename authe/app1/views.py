@@ -59,7 +59,7 @@ def blood_view(request):
         if d1.remaining_days>5:
             noti_remove1=notification.objects.filter(hospital=request.user, blood_type=d1.blood_type,reason="expiry")
             noti_remove1.delete()
-    blood_requests=request_list.objects.filter(donating_hospital=request.user).order_by('-total_wt')
+    blood_requests=eligible_hospitals.objects.filter(donating_hospital=request.user,is_sent=1).order_by('-total_wt')
     return render(request, 'Dashboard.html', {'all_blood': all_blood,'noti1':noti1,'noti2':noti2,'blood_requests':blood_requests})
 
 def SignupPage(request):
@@ -242,7 +242,7 @@ def request_form(request):
         blood_types = my_dict.get(blood_type, set())
         blood_type_list = blood_details.objects.filter(blood_type__in=blood_types)
         threshold=hospital_details.objects.get(hospital_id=request.user)
-
+        print(blood_type_list)
         wt=0
         if selected_option == "1":
             wt=1
@@ -269,14 +269,14 @@ def request_form(request):
                             pass
                         else:
                             total_wt=wt+(2.0/distance1.distance)
-                            eligible_hospitals.objects.create(user=request.user,donating_hospital=stock.hospital,available_blood_type=stock.blood_type,amount=stock.amount,distance=distance1.distance,blood_type=blood_type,requested_amount=amount1,total_wt=total_wt)
+                            eligible_hospitals.objects.create(user=request.user,donating_hospital=stock.hospital,available_blood_type=stock.blood_type,amount=stock.amount,distance=distance1.distance,blood_type=blood_type,requested_amount=amount1,total_wt=total_wt,is_accepted=0,is_sent=0,is_confirmed=0)
                     else:
                         distance2=distance_list.objects.get(user=stock.hospital,donating_hospital=request.user)
                         if distance2.distance ==0.0:
                             pass
                         else:
                             total_wt=wt+(2.0/distance2.distance)
-                            eligible_hospitals.objects.create(user=request.user,donating_hospital=stock.hospital,available_blood_type=stock.blood_type,amount=stock.amount,distance=distance2.distance,blood_type=blood_type,requested_amount=amount1,total_wt=total_wt)
+                            eligible_hospitals.objects.create(user=request.user,donating_hospital=stock.hospital,available_blood_type=stock.blood_type,amount=stock.amount,distance=distance2.distance,blood_type=blood_type,requested_amount=amount1,total_wt=total_wt,is_accepted=0,is_sent=0,is_confirmed=0)
         else:
             for stock in blood_type_list:
                 if (stock.amount)>amount1 and (stock.amount-amount1)>threshold.threshold:
@@ -287,16 +287,16 @@ def request_form(request):
                             pass
                         else:
                             total_wt=wt+(2.0/distance1.distance)
-                            eligible_hospitals.objects.create(user=request.user,donating_hospital=stock.hospital,available_blood_type=stock.blood_type,amount=stock.amount,distance=distance1.distance,blood_type=blood_type,requested_amount=amount1,total_wt=total_wt)
+                            eligible_hospitals.objects.create(user=request.user,donating_hospital=stock.hospital,available_blood_type=stock.blood_type,amount=stock.amount,distance=distance1.distance,blood_type=blood_type,requested_amount=amount1,total_wt=total_wt,is_accepted=0,is_sent=0,is_confirmed=0)
                     else:
                         distance2=distance_list.objects.get(user=stock.hospital,donating_hospital=request.user)
                         if distance2.distance==0.0:
                             pass
                         else:
                             total_wt=wt+(2.0/distance2.distance)
-                            eligible_hospitals.objects.create(user=request.user,donating_hospital=stock.hospital,available_blood_type=stock.blood_type,amount=stock.amount,distance=distance2.distance,blood_type=blood_type,requested_amount=amount1,total_wt=total_wt)
+                            eligible_hospitals.objects.create(user=request.user,donating_hospital=stock.hospital,available_blood_type=stock.blood_type,amount=stock.amount,distance=distance2.distance,blood_type=blood_type,requested_amount=amount1,total_wt=total_wt,is_accepted=0,is_sent=0,is_confirmed=0)
         
-        hospital_list=eligible_hospitals.objects.filter(user=request.user)
+        hospital_list=eligible_hospitals.objects.filter(user=request.user,blood_type=blood_type)
         list_of_requests=eligible_hospitals.objects.filter(user__in=request_list.objects.values('requesting_hospital'),
                                                            blood_type__in=request_list.objects.values('blood_type'))    
         return render(request,'RequestForm.html',{'hospital_list':hospital_list, 'list_of_requests':list_of_requests})
@@ -313,6 +313,10 @@ def update(request):
 def delete_bld(request,id):
     bl=blood_details.objects.get(id=id)
     bl.delete()
+    rem_exists=notification.objects.filter(hospital=request.user,blood_type=bl.blood_type).exists()
+    if rem_exists:
+        rem_remove=notification.objects.filter(hospital=request.user,blood_type=bl.blood_type)
+        rem_remove.delete()
     return redirect('update')
 
 def update_bld(request,id):
@@ -320,7 +324,12 @@ def update_bld(request,id):
     if request.method == 'POST':
         blood_type = request.POST.get('blood_type')
         amount = request.POST.get('amount')
-        days = 5  # Assuming you calculate days elsewhere
+        donation_date = request.POST.get('days') 
+        donation_date = datetime.strptime(donation_date, '%Y-%m-%d').date() # Assuming you calculate days elsewhere
+        valid_till=donation_date+timedelta(days=42)
+         # Assuming you calculate days elsewhere
+        
+        remaining_days = (valid_till - datetime.now().date()).days
 
         # Save the blood details with the current user's hospital
         blood=blood_details(
@@ -328,7 +337,9 @@ def update_bld(request,id):
             hospital=request.user,
             blood_type=blood_type,
             amount=amount,
-            days=days
+            donation_date=donation_date,
+            valid_till=valid_till,
+            remaining_days=remaining_days,
         )
         blood.save()
         return redirect('update')
@@ -362,6 +373,8 @@ def send_request(request,id):
     hs=eligible_hospitals.objects.get(id=id)
     # rem=request_list.get(requesting_hospital=request.user,donating_hospital=hs.donating_hospital,blood_type=hs.blood_type)
     # rem.delete()
+    hs.is_sent=1
+    hs.save()
     request_list.objects.create(
         requesting_hospital=request.user,
         donating_hospital=hs.donating_hospital,
@@ -377,12 +390,26 @@ def send_request(request,id):
     return JsonResponse(data)
 
 def is_accepted(request,id):
-    ok=request_list.objects.get(id=id)
+    # ok=request_list.objects.get(id=id)
+    ok=eligible_hospitals.objects.get(id=id)
     ok.is_accepted=1
     ok.save()
     return redirect('Dashboard')
 
 def declined(request,id):
-    notok=request_list.objects.get(id=id)
+    # notok=request_list.objects.get(id=id)
+    notok=eligible_hospitals.objects.get(id=id)
     notok.delete()
     return redirect('Dashboard')
+
+def is_confirmed(request,id):
+    done=eligible_hospitals.objects.get(id=id)
+    done.is_confirmed=1
+    done.save()
+    return redirect('request_form')
+
+def filled(request,id):
+    done1=eligible_hospitals.objects.get(id=id)
+    done1.delete()
+    return redirect('request_form')
+

@@ -168,6 +168,9 @@ class eligible_hospitals(models.Model):
     requested_amount=models.IntegerField(null=True, default=None)
     available_blood_type=models.CharField(max_length=624,null=True, default=None)
     total_wt=models.FloatField(null=True, default=None)
+    is_accepted=models.BooleanField(null=True, default=0)
+    is_sent=models.BooleanField(null=True, default=0)
+    is_confirmed=models.BooleanField(null=True, default=0)
 
 class request_list(models.Model):
     requesting_hospital=models.ForeignKey(User,on_delete=models.CASCADE,default=None)
