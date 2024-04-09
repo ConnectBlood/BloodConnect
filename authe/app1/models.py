@@ -39,6 +39,7 @@ class blood_details(models.Model):
     donation_date = models.DateField(null=True, blank=True)
     valid_till = models.DateField(blank=True, null=True)  # New field for valid till date
     remaining_days=models.IntegerField(null=True, blank=True)
+    # hospital1=models.CharField(max_length=128,null=True,default=None)
 
     def __str__(self):
         return self.blood_type
@@ -181,3 +182,19 @@ class request_list(models.Model):
     is_accepted=models.BooleanField()
     total_wt=models.FloatField(null=True, default=None)
     is_confirmed=models.BooleanField()
+    available_blood_type=models.CharField(max_length=546,null=True, default=None)
+    available_amount=models.IntegerField(null=True, default=None)
+
+class blood_send(models.Model):
+    requesting_hospital=models.ForeignKey(User,on_delete=models.CASCADE,default=None)
+    donating_hospital=models.CharField(max_length=354)
+    available_blood_type=models.CharField(max_length=546,null=True, default=None)
+    amount=models.IntegerField()
+    # update=models.BooleanField(null=True,default=0)
+
+class message_confirmed(models.Model):
+    requesting_hospital=models.ForeignKey(User,on_delete=models.CASCADE,default=None)
+    donating_hospital=models.CharField(max_length=354)
+    available_blood_type=models.CharField(max_length=546,null=True,default=None)
+    amount=models.IntegerField()
+    reason=models.CharField(max_length=546,null=True,default=None)

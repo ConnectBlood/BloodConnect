@@ -14,6 +14,7 @@ class Migration(migrations.Migration):
             name='blood_details',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                
                 ('blood_type', models.CharField(max_length=128, unique=True)),
                 ('amount', models.IntegerField()),
                 ('days', models.IntegerField()),

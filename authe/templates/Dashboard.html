@@ -4,11 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/static/styles.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <title>Dashboard</title>
   </head>
   <body>
     <div class="nav-bar">
       <div class="btn-nav">
+        <p>{{request.user}}</p>
         <button class="btn"><a href="{% url 'request_form' %}">REQUEST BLOOD</a></button>
         <button class="btn"><a href="{% url 'update' %}">UPDATE</a></button>
         <button class="btn"><a href="{% url 'logout' %}">LOGOUT</a></button>
@@ -32,11 +34,54 @@
         </ol>
       </div>
       <div>
+        {%for bs in blood_send2%}
+        <p>hospital {{bs.requesting_hospital}} has confirmed there request for blood_type{{bs.available_blood_type}} please send them the blood</p>
+        <button class="btn btn-req"><a href="/ok/{{bs.id}}">OK</a></button>
+        {%endfor%}
+        {%for d in declined%}
+        <p>hospital {{d.donating_hospital}} has declined your blood request</p>
+        <button class="btn btn-req"><a href="/ok/{{d.id}}">OK</a></button>
+        {%endfor%}
+        {%for r in rejected%}
+        <p>hospital {{r.requesting_hospital}} has already fulfilled there blood shortage. thank you for your support!</p>
+        <button class="btn btn-req"><a href="/ok/{{r.id}}">OK</a></button>
+        {%endfor%}
         {% for br in blood_requests %}
         <p>hospital {{br.requesting_hospital}} has requested you a blood of blood group {{br.blood_type}} and amount {{br.amount}} with weight {{br.total_wt}}</p>
+
         <button class="btn btn-req"><a href="/is-accepted/{{br.id}}">ACCEPT</a></button>
         <button class="btn btn-req"><a href="/declined/{{br.id}}">DECLINE</a></button>
         {% endfor %}
+        
+        <table>
+          <thead>
+            <td>Hospital</td>
+            <td>blood_type</td>
+            <td>amount</td>
+            <td>buttons</td>
+          </thead>
+          <tbody>
+            {%for rf in request_forwarded%}
+            <tr>
+            <td>{{rf.donating_hospital}}</td>
+            <td>{{rf.blood_type}}</td>
+            <td>{{rf.amount}}</td>
+            <td>
+              <div id="actionButtons" >
+                {%if rf.is_accepted %}
+                <button data-url="{% url 'is_confirmed' rf.id %}" class="btn btn-confirm" id="request-button">
+                    CONFIRM
+                </button>
+                {%else %}
+                <button disabled>Confirm</button>
+                {%endif%}
+                <button id="rejectButton"><a href="/rejected/{{rf.id}}">Reject</a></button>
+              </div>
+            </td>
+          </tr>
+            {%endfor%}
+          </tbody>
+        </table>
       </div>
       <div class="vl"></div>
       <div class="blood-dets">
@@ -72,5 +117,30 @@
         <li><a href="contact-us.html">Contact Us</a></li>
       </ul>
     </footer>
+    <script>
+      // When the document is ready
+      $(document).ready(function() {
+          // When the confirm button is clicked
+          $('.btn-confirm').click(function() {
+              // Get the URL from the data attribute
+              var url = $(this).data('url');
+              
+              // Make an AJAX request to the URL
+              $.ajax({
+                  url: url,
+                  type: 'GET', // or 'POST' depending on your view
+                  success: function(response) {
+                      // Handle the response here, if needed
+                      alert('AJAX request successful');
+                  },
+                  error: function(xhr, status, error) {
+                      // Handle errors here, if any
+                      alert('AJAX request failed');
+                      console.log('AJAX request failed:', error);
+                  }
+              });
+          });
+      });
+  </script>
   </body>
 </html>

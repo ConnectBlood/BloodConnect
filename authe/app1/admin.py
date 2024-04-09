@@ -13,7 +13,7 @@
 
 
 from django.contrib import admin
-from .models import blood_details,hospital_details,FriendList,FriendRequest,notification,UserLocation,eligible_hospitals,distance_list,request_list
+from .models import blood_details,hospital_details,FriendList,FriendRequest,notification,UserLocation,eligible_hospitals,distance_list,request_list,blood_send,message_confirmed
 
 class BloodDetailsAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
@@ -99,3 +99,19 @@ class request_listAdmin(admin.ModelAdmin):
         obj.save()
 
 admin.site.register(request_list, request_listAdmin)
+
+class blood_sendAdmin(admin.ModelAdmin):
+    def save_model(self, request, obj, form, change):
+        if not obj.user:
+            obj.user = request.user.profile.user
+        obj.save()
+
+admin.site.register(blood_send, blood_sendAdmin)
+
+class message_confirmedAdmin(admin.ModelAdmin):
+    def save_model(self, request, obj, form, change):
+        if not obj.user:
+            obj.user = request.user.profile.user
+        obj.save()
+
+admin.site.register(message_confirmed, message_confirmedAdmin)

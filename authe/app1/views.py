@@ -3,7 +3,7 @@ from django.shortcuts import render ,HttpResponse, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
-from . models import blood_details,hospital_details,FriendRequest, FriendList,notification,UserLocation,distance_list,eligible_hospitals,request_list
+from . models import blood_details,hospital_details,FriendRequest, FriendList,notification,UserLocation,distance_list,eligible_hospitals,request_list,blood_send,message_confirmed
 from django.views.generic.list import ListView
 import json
 from .utils import get_friend_request_or_false
@@ -59,8 +59,12 @@ def blood_view(request):
         if d1.remaining_days>5:
             noti_remove1=notification.objects.filter(hospital=request.user, blood_type=d1.blood_type,reason="expiry")
             noti_remove1.delete()
-    blood_requests=eligible_hospitals.objects.filter(donating_hospital=request.user,is_sent=1).order_by('-total_wt')
-    return render(request, 'Dashboard.html', {'all_blood': all_blood,'noti1':noti1,'noti2':noti2,'blood_requests':blood_requests})
+    blood_requests=request_list.objects.filter(donating_hospital=request.user).order_by('-total_wt')
+    request_forwarded=request_list.objects.filter(requesting_hospital=request.user)
+    blood_send2=message_confirmed.objects.filter(donating_hospital=request.user,reason="send")
+    declined=message_confirmed.objects.filter(requesting_hospital=request.user,reason="cantsend")
+    rejected=message_confirmed.objects.filter(donating_hospital=request.user,reason="alreadydone")
+    return render(request, 'Dashboard.html', {'all_blood': all_blood,'noti1':noti1,'noti2':noti2,'blood_requests':blood_requests,'request_forwarded':request_forwarded,'blood_send2':blood_send2,'declined':declined,'rejected':rejected})
 
 def SignupPage(request):
     if request.method == 'POST':
@@ -120,6 +124,7 @@ def Signup2Page(request):
 
 def Signup3Page(request):
     if request.method == 'POST':
+        hospital1=request.user
         blood_type = request.POST.get('blood_type')
         amount = request.POST.get('amount')
         donation_date = request.POST.get('days') 
@@ -136,6 +141,7 @@ def Signup3Page(request):
             donation_date=donation_date,
             valid_till=valid_till,
             remaining_days=remaining_days,
+            # hospital1=hospital1
         )
     
     blood_list=blood_details.objects.filter(hospital=request.user)
@@ -253,12 +259,12 @@ def request_form(request):
         elif selected_option=="4":
             wt=4
         
-        # detail_exists=eligible_hospitals.objects.filter(user=request.user,blood_type=blood_type).exists()
-        # if detail_exists:
-        #     detail1=eligible_hospitals.objects.filter(user=request.user,blood_type=blood_type)
-        #     detail1.delete()
-        # else:
-        #     pass
+        detail_exists=eligible_hospitals.objects.filter(user=request.user,blood_type=blood_type).exists()
+        if detail_exists:
+            detail1=eligible_hospitals.objects.filter(user=request.user,blood_type=blood_type)
+            detail1.delete()
+        else:
+            pass
         if 'emergency' in request.POST:
             for stock in blood_type_list:
                 if (stock.amount)>amount1 :
@@ -380,36 +386,105 @@ def send_request(request,id):
         donating_hospital=hs.donating_hospital,
         blood_type=hs.blood_type,
         amount=hs.requested_amount,
+        available_blood_type=hs.available_blood_type,
         total_wt=hs.total_wt,
         message="hii",
         is_accepted=0,
-        is_confirmed=0
+        is_confirmed=0,
+        available_amount=hs.amount
     )
     
     data = {'status': 'success', 'id': id}
     return JsonResponse(data)
 
 def is_accepted(request,id):
-    # ok=request_list.objects.get(id=id)
-    ok=eligible_hospitals.objects.get(id=id)
+    ok=request_list.objects.get(id=id)
+    # ok=eligible_hospitals.objects.get(id=id)
     ok.is_accepted=1
     ok.save()
     return redirect('Dashboard')
 
 def declined(request,id):
     # notok=request_list.objects.get(id=id)
-    notok=eligible_hospitals.objects.get(id=id)
+    notok=request_list.objects.get(id=id)
+    message_confirmed.objects.create(requesting_hospital=notok.requesting_hospital,donating_hospital=notok.donating_hospital,available_blood_type=notok.available_blood_type,amount=notok.amount,reason="cantsend")
     notok.delete()
     return redirect('Dashboard')
 
 def is_confirmed(request,id):
-    done=eligible_hospitals.objects.get(id=id)
+    done=request_list.objects.get(id=id)
+    # done1=request_list.objects.get(donating_hospital=done.donating_hospital,available_blood_type=done.available_blood_type)
     done.is_confirmed=1
     done.save()
-    return redirect('request_form')
+    print(done.donating_hospital)
+    # blood2=blood_details.objects.get(hospital=str(done.donating_hospital),blood_type=done.available_blood_type)
+    
+    blood=blood_details.objects.filter(blood_type=done.available_blood_type) 
+    for b in blood:
+        if str(b.hospital)==str(done.donating_hospital):
+            b.amount-=done.amount
+            b.save()
+    # blood1=blood_details.objects.filter(blood_type=done.available_blood_type)
+    # for b1 in blood1:
+    #     if str(b1.hospital)==str(done.requesting_hospital):
+    #         b1.amount+=done.amount
+    #         b1.save()
+
+    blood=blood_details.objects.filter(blood_type=done.available_blood_type) 
+    for b in blood:
+        if str(b.hospital)==str(done.donating_hospital):
+            blood_details.objects.create(hospital=done.requesting_hospital,
+                                         blood_type=done.available_blood_type,
+                                         amount=done.amount,
+                                         donation_date=b.donation_date,
+                                         valid_till=b.valid_till,
+                                         remaining_days=b.remaining_days)
+
+       
+
+
+
+
+    # de=blood_details.objects.get(hospital=str(done.donating_hospital),blood_type=done.available_blood_type).exists()
+    # if de:
+    #     blood1=blood_details.objects.filter(blood_type=done.available_blood_type)
+    #     for b1 in blood1:
+    #         if str(b1.hospital)==str(done.requesting_hospital):
+    #             b1.amount+=done.amount
+    #             b1.save()
+    # else:
+    #     blood_details.objects.create(hospital=done.requesting_hospital,
+    #                                      blood_type=done.available_blood_type,
+    #                                      amount=done.amount,
+    #                                      donation_date=blood2.donation_date,
+    #                                      valid_till=blood2.valid_till,
+    #                                      remaining_days=blood2.remaining_days)   
+    blood_send.objects.create(requesting_hospital=done.requesting_hospital,donating_hospital=done.donating_hospital,available_blood_type=done.available_blood_type,amount=done.amount)
+    message_confirmed.objects.create(requesting_hospital=done.requesting_hospital,donating_hospital=done.donating_hospital,available_blood_type=done.available_blood_type,amount=done.amount,reason="send")
+    done.delete()
+    data={'status':'success','id':id}
+    return JsonResponse(data)
 
 def filled(request,id):
     done1=eligible_hospitals.objects.get(id=id)
     done1.delete()
     return redirect('request_form')
 
+def ok(request,id):
+    ok8=message_confirmed.objects.get(id=id)
+    ok8.delete()
+    return redirect('Dashboard')
+
+def rejected(request,id):
+    # notok=request_list.objects.get(id=id)
+    notok8=request_list.objects.get(id=id)
+    message_confirmed.objects.create(requesting_hospital=notok8.requesting_hospital,donating_hospital=notok8.donating_hospital,available_blood_type=notok8.available_blood_type,amount=notok8.amount,reason="alreadydone")
+    notok8.delete()
+    return redirect('Dashboard')
+
+def calc(hosp,blood,amount):
+    blood_send1=blood_details.objects.filter(hospital=hosp,blood_type=blood)
+    
+    blood_send1.amount=blood_send1.amount-amount
+    blood_send1.save()
+    return None

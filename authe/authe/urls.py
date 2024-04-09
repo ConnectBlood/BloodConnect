@@ -40,4 +40,7 @@ urlpatterns = [
     path('send-request/<id>',views.send_request, name='send_request'),
     path('is-accepted/<id>', views.is_accepted, name='is_accepted'),
     path('declined/<id>', views.declined, name='declined'),
+    path('is-confirmed/<id>', views.is_confirmed, name='is_confirmed'),
+    path('ok/<id>', views.ok, name='ok'),
+    path('rejected/<id>', views.rejected, name='rejected'),
 ]
